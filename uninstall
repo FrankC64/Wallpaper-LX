@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! "$EUID" = 0 ]; then
+if [ ! $EUID = 0 ]; then
     echo "ERROR: Exec with root."
     exit 1
 fi
@@ -18,7 +18,7 @@ else
 fi
 
 # Remove venv files
-VENV_FILES=($HOME/.config/Wallpaper-LX/bin $HOME/.config/Wallpaper-LX/include $HOME/.config/Wallpaper-LX/lib $HOME/.config/Wallpaper-LX/lib64 $HOME/.config/Wallpaper-LX/share $HOME/.config/Wallpaper-LX/pyvenv.cfg)
+VENV_FILES=("$HOME/.config/Wallpaper-LX/bin" "$HOME/.config/Wallpaper-LX/include" "$HOME/.config/Wallpaper-LX/lib" "$HOME/.config/Wallpaper-LX/lib64" "$HOME/.config/Wallpaper-LX/share" "$HOME/.config/Wallpaper-LX/pyvenv.cfg")
 
 for element in ${VENV_FILES[@]}; do
     if [ -d $element ]; then
