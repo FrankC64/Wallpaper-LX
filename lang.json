@@ -1,0 +1,59 @@
+{
+    "en": {
+        "set_wallpapers": "Set wallpapers",
+        "image": "Image",
+        "mode": "Mode",
+        "width": "Width",
+        "height": "Height",
+        "x": "x",
+        "y": "y",
+        "image_mode": [
+            "Center the image on the screen",
+            "Stretch the image to fill the screen",
+            "Repeat image to fill the screen"
+        ],
+        "screen_information": "Screen information",
+        "select_image": "Select image",
+        "error": "ERROR!",
+        "open_image_error_message": "The selected image/file could not be read.",
+        "not_all_image_selected_error": "You must select all images before proceeding.",
+        "image_not_exists": "The image selected for {screen_id} does not exist.",
+        "internal_error_resolution": "Internal error: the total resolution of the screens is not known.",
+        "not_support_set_wallpaper": "There is no support for setting the wallpaper in this distribution.",
+        "not_wallpaper_set": "The wallpaper could not be set.",
+        "lang": "Lang",
+        "check_restart": "Check restart",
+        "check_restart_message": "To show the changes the app must be restarted, do you want to restart it now?",
+        "about": "About",
+        "close": "Close"
+    },
+    "es": {
+        "set_wallpapers": "Establecer fondos",
+        "image": "Imagen",
+        "mode": "Modo",
+        "width": "Ancho",
+        "height": "Largo",
+        "x": "x",
+        "y": "y",
+        "image_mode": [
+            "Centrar la imagen en la pantalla",
+            "Estrechar la imagen para llenar la pantalla",
+            "Repetir imagen hasta llenar la pantalla"
+        ],
+        "screen_information": "Información de la pantalla",
+        "select_image": "Seleccionar imagen",
+        "error": "¡ERROR!",
+        "open_image_error_message": "No se pudo leer la imagen/archivo seleccionado.",
+        "not_all_image_selected_error": "Debe seleccionar todas las imagenes antes de continuar.",
+        "image_not_exists": "La image seleccionada para {screen_id} no existe.",
+        "internal_error_resolution": "Error interno: no se conoce la resolución total de las pantallas.",
+        "not_support_set_wallpaper": "No hay compatibilidad para establecer el fondo de pantalla en esta distribución.",
+        "not_wallpaper_set": "El fondo de pantalla no pude ser establecido.",
+        "lang": "Idioma",
+        "check_restart": "Comprobar reinicio",
+        "check_restart_message": "Para mostrar los cambios la app debe reiniciarse ¿desea reiniciarla ahora?",
+        "about": "Acerda de",
+        "close": "Cerrar"
+    },
+    "langs": [["English", "en"], ["Español", "es"]]
+}

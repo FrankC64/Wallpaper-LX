@@ -1,0 +1,59 @@
+#!/bin/bash
+
+if [ ! "$EUID" = 0 ]; then
+    echo "ERROR: Exec with root."
+    exit 1
+fi
+
+SH_PATH=$(dirname "$0")
+APP_PATH=/opt/Wallpaper-LX
+
+# necessary files
+APP_FOLDER_PATH=$SH_PATH/app/
+RESOURCES_FOLDER_PATH=$SH_PATH/resources/
+
+LANG_JSON=$SH_PATH/lang.json
+MAIN=$SH_PATH/main.py
+WALLPAPER_LX=$SH_PATH/Wallpaper-LX
+APP_DESKTOP=$SH_PATH/Wallpaper-LX.desktop
+
+echo "INFO: Starting installation..."
+
+if [ -d $APP_PATH ]; then
+    chmod +x "$SH_PATH/uninstall"
+    $SH_PATH/uninstall
+    echo "INFO: Existing version removed."
+fi
+
+mkdir $APP_PATH
+
+cp "$APP_FOLDER_PATH" $APP_PATH/app/ -r
+
+if [ ! -d $APP_PATH/app ]; then
+    echo "ERROR: The files required for app execution were not copied."
+    rm -r -dir --force /opt/Wallpaper-LX
+    exit
+fi
+
+cp "$RESOURCES_FOLDER_PATH" $APP_PATH/resources/ -r
+
+if [ ! -d $APP_PATH/resources ]; then
+    echo "ERROR: The files required for app execution were not copied."
+    rm -r -dir --force /opt/Wallpaper-LX
+    exit
+fi
+
+cp "$LANG_JSON" $APP_PATH/
+cp "$MAIN" $APP_PATH/
+cp "$WALLPAPER_LX" $APP_PATH/
+
+if [ ! -f $APP_PATH/lang.json ] || [ ! -f $APP_PATH/main.py ] || [ ! -f $APP_PATH/Wallpaper-LX ]; then
+    echo "ERROR: The files required for app execution were not copied."
+    rm -r -dir --force /opt/Wallpaper-LX
+    exit
+fi
+
+chmod +x $APP_PATH/Wallpaper-LX
+desktop-file-install --dir=/usr/share/applications "$APP_DESKTOP"
+
+echo "INFO: App successfully installed."

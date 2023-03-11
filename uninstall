@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [ ! "$EUID" = 0 ]; then
+    echo "ERROR: Exec with root."
+    exit 1
+fi
+
+if [ $HOME = /root ]; then
+    HOME=/home/$SUDO_USER
+fi
+
+# Remove app files
+if [ -d /opt/Wallpaper-LX ]; then
+    rm -r -dir --force /opt/Wallpaper-LX
+    echo "INFO: App uninstalled."
+else
+    echo "INFO: The app is not installed."
+fi
+
+# Remove venv files
+VENV_FILES=($HOME/.config/Wallpaper-LX/bin $HOME/.config/Wallpaper-LX/include $HOME/.config/Wallpaper-LX/lib $HOME/.config/Wallpaper-LX/lib64 $HOME/.config/Wallpaper-LX/share $HOME/.config/Wallpaper-LX/pyvenv.cfg)
+
+for element in ${VENV_FILES[@]}; do
+    if [ -d $element ]; then
+        rm -r -dir --force $element
+        echo "INFO: $element (removed)"
+    elif [ -f $element ]; then
+        rm --force $element
+        echo "INFO: $element (removed)"
+    elif [ -h $element ]; then
+        rm --force $element
+        echo "INFO: $element (removed)"
+    fi
+done
+
+if [ -f /usr/share/applications/Wallpaper-LX.desktop ]; then
+    rm --force /usr/share/applications/Wallpaper-LX.desktop
+    echo "INFO: /usr/share/applications/Wallpaper-LX.desktop (removed)"
+fi
