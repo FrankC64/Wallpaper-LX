@@ -26,13 +26,15 @@ LANG_JSON_PATH = join(APP_PATH, "lang.json")
 
 CONFIG_PATH = f"/home/{getlogin()}/.config/Wallpaper-LX"
 APP_DATA_PATH = join(CONFIG_PATH, "appdata.json")
+SCREEN_DATA_PATH = join(CONFIG_PATH, "screendata.json")
 WALLPAPER_PATH = join(CONFIG_PATH, "wallpaper.jpg")
 
 # Dicts data
-DEFAULT_APPDATA_JSON = {
-    'geometry': "800x600+10+10", 'state': "normal", 'lang': "en",
-    'images_configs': {}
+DEFAULT_APP_DATA_JSON = {
+    'geometry': "800x600+10+10", 'state': "normal", 'lang': "en"
 }
+DEFAULT_SCREEN_DATA_JSON = {'images_configs': {}}
+
 IMAGE_CONFIG = {'image_path': '', 'image_mode': 0}
 
 # Interface constants

@@ -16,7 +16,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 """
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __author__ = "FrankC64"
 
 import copy, json, subprocess
@@ -43,7 +43,7 @@ window = None
 
 class App(Tk):
     appdata: dict = {}
-    screen_data: dict = {}
+    screen_info: dict = {}
     focus_highlight_id: str = ""
     images_list: list = []
     last_tag: str = ""
@@ -57,26 +57,28 @@ class App(Tk):
         _preLoad()
 
         self.appdata = loadAppData()
-        self.screen_data = getScreensInfo()
+        self.screendata = loadScreenData()
+        self.screen_info = getScreensInfo()
 
         # Variable initialization
-        if len(self.screen_data['screens']) > 0:
-            self.last_tag = self.screen_data['screens'][0]['screen_id']
+        if len(self.screen_info['screens']) > 0:
+            self.last_tag = self.screen_info['screens'][0]['screen_id']
 
-        for screen in self.screen_data['screens']:
+        for screen in self.screen_info['screens']:
             self.actives_screen.append(screen['screen_id'])
 
         # Data update
-        for image_config in self.appdata['images_configs'].values():
+        for image_config in self.screendata['images_configs'].values():
             try:
                 Image.open(image_config['image_path'])
             except Exception:
                 image_config['image_path'] = ""
 
-        for screen in self.screen_data['screens']:
-            if screen['screen_id'] not in self.appdata['images_configs']:
-                self.appdata['images_configs'].update(
+        for screen in self.screen_info['screens']:
+            if screen['screen_id'] not in self.screendata['images_configs']:
+                self.screendata['images_configs'].update(
                     {screen['screen_id']: copy.copy(IMAGE_CONFIG)})
+                self.saveScreenData()
 
         # Config lang
         global_lang = self.appdata['lang']
@@ -121,19 +123,20 @@ class App(Tk):
                 self.state("normal")
 
         except Exception as e:
-            self.appdata = copy.copy(DEFAULT_APPDATA_JSON)
+            self.appdata = copy.copy(DEFAULT_APP_DATA_JSON)
             self.geometry(self.appdata['geometry'])
+            self.saveAppData()
 
     def drawRectangles(self):
         canvas = self.canvas.getCanvas()
         self.images_list.clear()
         canvas.delete("all")
 
-        for screen in self.screen_data['screens']:
+        for screen in self.screen_info['screens']:
             tag = screen['screen_id']
 
             self._drawRectangle(
-                screen, "black", self.appdata['images_configs'][tag],
+                screen, "black", self.screendata['images_configs'][tag],
                 fill="#F5F5F5", tag=tag)
             canvas.tag_bind(tag, "<Button-1>", self.getFunction(tag))
 
@@ -141,21 +144,21 @@ class App(Tk):
 
     def pressRectangleEvent(self, tag: str, e):
         canvas = self.canvas.getCanvas()
-        screen_data = None
+        screen_info = None
 
-        for screen in self.screen_data['screens']:
+        for screen in self.screen_info['screens']:
             if screen['screen_id'] == tag:
-                screen_data = screen
+                screen_info = screen
                 canvas.delete(self.focus_highlight_id)
                 self.focus_highlight_id = \
                     self._drawRectangle(screen, "blue", None)
 
                 break
 
-        if screen_data:
+        if screen_info:
             self.center_frame.setData(
-                screen_data,
-                self.appdata['images_configs'][screen_data['screen_id']]
+                screen_info,
+                self.screendata['images_configs'][screen_info['screen_id']]
             )
 
             self.last_tag = tag
@@ -167,26 +170,26 @@ class App(Tk):
         self.drawRectangles()
 
     def setWallpapers(self):
-        if self.screen_data['total_resolution'] == {}:
+        if self.screen_info['total_resolution'] == {}:
             messagebox.showerror(
                 getText('error'), getText('internal_error_resolution'))
             return
 
         wallpaper = Image.new(
             "RGB", (
-                self.screen_data['total_resolution']['width'],
-                self.screen_data['total_resolution']['height']
+                self.screen_info['total_resolution']['width'],
+                self.screen_info['total_resolution']['height']
             )
         )
 
         if self.actives_screen == []:
             return
 
-        for screen_id, image_config in self.appdata['images_configs'].items():
+        for screen_id, image_config in self.screendata['images_configs'].items():
             if screen_id not in self.actives_screen:
                 continue
 
-            for screen in self.screen_data['screens']:
+            for screen in self.screen_info['screens']:
                 if screen_id == screen['screen_id']:
                     break
 
@@ -215,13 +218,16 @@ class App(Tk):
 
         try:
             subprocess.run(command, shell=True, check=True)
-            self.saveAppData()
+            self.saveScreenData()
         except subprocess.CalledProcessError:
             messagebox.showerror(
                 getText('error'), getText('not_wallpaper_set'))
 
     def saveAppData(self):
         saveAppData(self.appdata)
+
+    def saveScreenData(self):
+        saveScreenData(self.screendata)
 
     def updateAppData(self, e):
         if not self.winfo_ismapped():
@@ -278,7 +284,7 @@ class App(Tk):
 class CenterFrame(Frame):
     columns = 0
     min_height = 0
-    screen_data = None
+    screen_info = None
     image_config = None
 
     def __init__(self, master):
@@ -396,16 +402,16 @@ class CenterFrame(Frame):
         if self.min_height == 0:
             self.min_height = height
 
-    def setData(self, screen_data: dict, image_config: dict):
-        self.screen_data = screen_data
+    def setData(self, screen_info: dict, image_config: dict):
+        self.screen_info = screen_info
         self.image_config = image_config
         self.updateData()
 
     def updateData(self):
-        if not self.screen_data or not self.image_config:
+        if not self.screen_info or not self.image_config:
             return
 
-        self.screen_id['text'] = self.screen_data['screen_id']
+        self.screen_id['text'] = self.screen_info['screen_id']
 
         self.image_path['state'] = "normal"
         self.image_path.delete(0, "end")
@@ -413,10 +419,10 @@ class CenterFrame(Frame):
         self.image_path['state'] = "readonly"
 
         self.mode_cbbox.current(self.image_config['image_mode'])
-        self.width_value['text'] = self.screen_data['width']
-        self.height_value['text'] = self.screen_data['height']
-        self.x_value['text'] = self.screen_data['x']
-        self.y_value['text'] = self.screen_data['y']
+        self.width_value['text'] = self.screen_info['width']
+        self.height_value['text'] = self.screen_info['height']
+        self.x_value['text'] = self.screen_info['x']
+        self.y_value['text'] = self.screen_info['y']
 
     def selectImage(self):
         if self.image_config is None:
@@ -611,11 +617,9 @@ def loadAppData():
     data = {}
 
     def dataWithLang():
-        data = copy.copy(DEFAULT_APPDATA_JSON)
-
+        data = copy.copy(DEFAULT_APP_DATA_JSON)
         if locale.getlocale()[0][:2] in LANG_JSON:
             data['lang'] = locale.getlocale()[0][:2]
-
         return data
 
     if not exists(CONFIG_PATH):
@@ -629,37 +633,58 @@ def loadAppData():
         except Exception:
             return dataWithLang()
 
-        if len(data) != len(DEFAULT_APPDATA_JSON):
-            data = copy.copy(DEFAULT_APPDATA_JSON)
-            if locale.getlocale()[0:2] in LANG_JSON:
-                data['lang'] = locale.getlocale()[0][:2]
+        if len(data) != len(DEFAULT_APP_DATA_JSON):
+            data = dataWithLang()
 
         else:
-            if 'geometry' in data:
-                width = data['geometry'][0:data['geometry'].find("x")]
-                height = data['geometry'][data['geometry'].find("x")+1:data['geometry'].find("+")]
-
-                try:
-                    width = int(width)
-                    height = int(height)
-
-                    if (width <= 50) or (height <= 50):
-                        data['geometry'] = DEFAULT_APPDATA_JSON['geometry']
-                except ValueError:
-                    return dataWithLang()
-
             for key, value in data.items():
-                if key == 'images_configs':
-                    for value in value.values():
-                        if ('image_path' not in value) \
-                                or ('image_mode' not in value):
-                            return dataWithLang()
-                        elif (type(value['image_path']) != str) \
-                                or (type(value['image_mode']) != int):
-                            return dataWithLang()
-                elif key not in DEFAULT_APPDATA_JSON:
+                if key not in DEFAULT_APP_DATA_JSON:
                     return dataWithLang()
-                elif type(value) != str:
+                elif type(value) is not str:
+                    return dataWithLang()
+
+            width = data['geometry'][0:data['geometry'].find("x")]
+            height = data['geometry'][data['geometry'].find("x")+1:data['geometry'].find("+")]
+
+            try:
+                width = int(width)
+                height = int(height)
+
+                if (width <= 50) or (height <= 50):
+                    data['geometry'] = DEFAULT_APP_DATA_JSON['geometry']
+            except ValueError:
+                data = dataWithLang()
+
+    return data
+
+
+def loadScreenData():
+    data = {}
+
+    if not exists(CONFIG_PATH):
+        makedirs(CONFIG_PATH)
+        data = copy.copy(DEFAULT_SCREEN_DATA_JSON)
+
+    else:
+        try:
+            with open(SCREEN_DATA_PATH, "r") as f:
+                data = json.load(f)
+        except Exception:
+            return copy.copy(DEFAULT_SCREEN_DATA_JSON)
+
+        if len(data) != len(DEFAULT_SCREEN_DATA_JSON):
+            data = copy.copy(DEFAULT_SCREEN_DATA_JSON)
+
+        else:
+            if 'images_configs' not in data:
+                return dataWithLang()
+
+            for value in data['images_configs'].values():
+                if ('image_path' not in value) \
+                        or ('image_mode' not in value):
+                    return dataWithLang()
+                elif (type(value['image_path']) is not str) \
+                        or (type(value['image_mode']) is not int):
                     return dataWithLang()
 
     return data
@@ -669,7 +694,15 @@ def saveAppData(data: dict):
     if not exists(CONFIG_PATH):
         makedirs(CONFIG_PATH)
 
-    with open(APP_DATA_PATH, "w") as f:
+    with open(APP_DATA_PATH, "w", encoding='utf-8') as f:
+        json.dump(data, f)
+
+
+def saveScreenData(data: dict):
+    if not exists(CONFIG_PATH):
+        makedirs(CONFIG_PATH)
+
+    with open(SCREEN_DATA_PATH, "w", encoding='utf-8') as f:
         json.dump(data, f)
 
 
