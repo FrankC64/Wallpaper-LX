@@ -16,7 +16,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 """
 
-__version__ = "1.0"
+__version__ = "1.1.0"
 __author__ = "FrankC64"
 
 import copy, json, subprocess
@@ -215,6 +215,7 @@ class App(Tk):
 
         try:
             subprocess.run(command, shell=True, check=True)
+            self.saveAppData()
         except subprocess.CalledProcessError:
             messagebox.showerror(
                 getText('error'), getText('not_wallpaper_set'))
@@ -440,7 +441,6 @@ class CenterFrame(Frame):
                 self.updateData()
 
                 window.updateCanvas()
-                window.saveAppData()
 
         except Exception:
             messagebox.showerror(
@@ -454,7 +454,6 @@ class CenterFrame(Frame):
             self.image_config['image_mode'] = self.mode_cbbox.current()
 
             window.updateCanvas()
-            window.saveAppData()
 
 
 class BottomFrame(Frame):
@@ -566,13 +565,12 @@ class SettingsWidget(Frame):
                 lang_id = lang[1]
 
         if lang_id != global_lang:
-            window.appdata['lang'] = lang_id
-            window.saveAppData()
-
             result = messagebox.askyesno(
                 getText('check_restart'), getText('check_restart_message'))
 
             if result:
+                window.appdata['lang'] = lang_id
+                window.saveAppData()
                 restart_app = True
                 window.destroy()
 
@@ -615,8 +613,8 @@ def loadAppData():
     def dataWithLang():
         data = copy.copy(DEFAULT_APPDATA_JSON)
 
-        if locale.getlocale()[0][0:2] in LANG_JSON:
-            data['lang'] = locale.getlocale()[0][0:2]
+        if locale.getlocale()[0][:2] in LANG_JSON:
+            data['lang'] = locale.getlocale()[0][:2]
 
         return data
 
@@ -634,7 +632,7 @@ def loadAppData():
         if len(data) != len(DEFAULT_APPDATA_JSON):
             data = copy.copy(DEFAULT_APPDATA_JSON)
             if locale.getlocale()[0:2] in LANG_JSON:
-                data['lang'] = locale.getlocale()[0][0:2]
+                data['lang'] = locale.getlocale()[0][:2]
 
         else:
             if 'geometry' in data:

@@ -6,7 +6,7 @@ Wallpaper LX es una app de código abierto que te ayuda a establecer el fondo de
 [![license](https://img.shields.io/badge/license-GPL-blue.svg)]()
 [![release](https://img.shields.io/badge/release-v1.0-blue.svg)]()
 
-Distribuciones compatibles: Lubuntu.
+Entornos de escritorio compatibles: LXQT y GNOME.
 
 ---
 
@@ -14,9 +14,16 @@ Distribuciones compatibles: Lubuntu.
 **1. Paquetes necesarios**<br>
 Para que la app funcione se deben instalar varios paquetes. Escriba los siguientes comandos en su terminal:
 
+### Lubuntu (LXQT)
 ```bash
 sudo apt-get update
-sudo apt-get install python3-venv python3-tk python3-pil.imagetk git
+sudo apt-get install python3-venv python3-tk python3-pil.imagetk git xrandr xdpyinfo
+```
+
+### Fedora (GNOME)
+```bash
+dnf check-update
+sudo dnf install python3-virtualenv python3-tkinter python3-imaging-tk git xrandr xdpyinfo
 ```
 
 **2. Clonar el repositorio**<br>

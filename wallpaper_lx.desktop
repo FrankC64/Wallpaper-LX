@@ -5,6 +5,6 @@ Name=Wallpaper LX
 Comment=Set wallpapers
 Comment[es]=Establece fondos de pantallas
 Exec=/opt/Wallpaper-LX/Wallpaper-LX
-Icon=/opt/Wallpaper-LX/resources/appicon
+Icon=wallpaper-lx
 Terminal=false
 Categories=Utility;

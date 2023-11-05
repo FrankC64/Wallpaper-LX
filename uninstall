@@ -33,7 +33,13 @@ for element in ${VENV_FILES[@]}; do
     fi
 done
 
-if [ -f /usr/share/applications/Wallpaper-LX.desktop ]; then
-    rm --force /usr/share/applications/Wallpaper-LX.desktop
-    echo "INFO: /usr/share/applications/Wallpaper-LX.desktop (removed)"
+rm --force /usr/share/icons/hicolor/16x16/apps/wallpaper-lx.png
+rm --force /usr/share/icons/hicolor/32x32/apps/wallpaper-lx.png
+rm --force /usr/share/icons/hicolor/48x48/apps/wallpaper-lx.png
+rm --force /usr/share/icons/hicolor/128x128/apps/wallpaper-lx.png
+rm --force /usr/share/icons/hicolor/256x256/apps/wallpaper-lx.png
+
+if [ -f /usr/share/applications/wallpaper_lx.desktop ]; then
+    rm --force /usr/share/applications/wallpaper_lx.desktop
+    echo "INFO: /usr/share/applications/wallpaper_lx.desktop (removed)"
 fi

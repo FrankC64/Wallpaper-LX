@@ -15,7 +15,7 @@ RESOURCES_FOLDER_PATH=$SH_PATH/resources/
 LANG_JSON=$SH_PATH/lang.json
 MAIN=$SH_PATH/main.py
 WALLPAPER_LX=$SH_PATH/Wallpaper-LX
-APP_DESKTOP=$SH_PATH/Wallpaper-LX.desktop
+APP_DESKTOP=$SH_PATH/wallpaper_lx.desktop
 
 echo "INFO: Starting installation..."
 
@@ -27,33 +27,38 @@ fi
 
 mkdir $APP_PATH
 
-cp "$APP_FOLDER_PATH" $APP_PATH/app/ -r
+IFS=$'\n' read -d '' -ra array <<< "$(cat $SH_PATH/appfiles.txt)"
+folderpath=$APP_PATH
 
-if [ ! -d $APP_PATH/app ]; then
+# Imprime el contenido del array
+for element in "${array[@]}"; do
+  if [ -d "$element" ]; then
+    folderpath="$APP_PATH/$element"
+    mkdir -p "$folderpath"
+    echo "INFO: Folder $folderpath created."
+  else
+    cp "$element" "$folderpath"
+    echo "INFO: $element copied to $folderpath."
+  fi
+done
+
+for element in "${array[@]}"; do
+  if [ ! -e "$element" ]; then
     echo "ERROR: The files required for app execution were not copied."
     rm -r -dir --force /opt/Wallpaper-LX
     exit
-fi
-
-cp "$RESOURCES_FOLDER_PATH" $APP_PATH/resources/ -r
-
-if [ ! -d $APP_PATH/resources ]; then
-    echo "ERROR: The files required for app execution were not copied."
-    rm -r -dir --force /opt/Wallpaper-LX
-    exit
-fi
-
-cp "$LANG_JSON" $APP_PATH/
-cp "$MAIN" $APP_PATH/
-cp "$WALLPAPER_LX" $APP_PATH/
-
-if [ ! -f $APP_PATH/lang.json ] || [ ! -f $APP_PATH/main.py ] || [ ! -f $APP_PATH/Wallpaper-LX ]; then
-    echo "ERROR: The files required for app execution were not copied."
-    rm -r -dir --force /opt/Wallpaper-LX
-    exit
-fi
+  fi
+done
 
 chmod +x $APP_PATH/Wallpaper-LX
+
+cp "$SH_PATH/icons/16x16/wallpaper-lx.png" /usr/share/icons/hicolor/16x16/apps/
+cp "$SH_PATH/icons/32x32/wallpaper-lx.png" /usr/share/icons/hicolor/32x32/apps/
+cp "$SH_PATH/icons/48x48/wallpaper-lx.png" /usr/share/icons/hicolor/48x48/apps/
+cp "$SH_PATH/icons/128x128/wallpaper-lx.png" /usr/share/icons/hicolor/128x128/apps/
+cp "$SH_PATH/icons/256x256/wallpaper-lx.png" /usr/share/icons/hicolor/256x256/apps/
+
 desktop-file-install --dir=/usr/share/applications "$APP_DESKTOP"
+echo "INFO: wallpaper_lx.desktop installed."
 
 echo "INFO: App successfully installed."

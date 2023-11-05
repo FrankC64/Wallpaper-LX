@@ -41,7 +41,7 @@ def getScreensInfo():
         result = result.stdout.strip()
 
         regex = re.compile(
-            r"(?P<screen_id>\w+-\d+)?.+\s+(?P<width>\d+)x(?P<height>\d+)"
+            r"(?P<screen_id>[-\w+\d+]{1,})?.+\s+(?P<width>\d+)x(?P<height>\d+)"
             r"\+(?P<x>\d+)\+(?P<y>\d+)")
 
         for i in result.split('\n'):
@@ -88,6 +88,12 @@ def getSetWallpaperCommand():
 
     if (desktop_session == "lxqt") or (desktop_session == "lubuntu"):
         return f"pcmanfm-qt --set-wallpaper \"{WALLPAPER_PATH}\" --wallpaper-mode=center"
+
+    elif desktop_session == "gnome":
+        return ("gsettings set org.gnome.desktop.background picture-uri "
+                f"\"{WALLPAPER_PATH}\" && gsettings set org.gnome.desktop.background "
+                f"picture-uri-dark \"{WALLPAPER_PATH}\" && gsettings set "
+                "org.gnome.desktop.background picture-options spanned")
 
 
 def createImage(size: tuple, image_config: dict, reduction: bool = False):

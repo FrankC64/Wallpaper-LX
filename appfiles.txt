@@ -1,0 +1,12 @@
+lang.json
+main.py
+Wallpaper-LX
+app/
+app/__init__.py
+app/auxiliar.py
+app/const.py
+resources/
+resources/appicon.png
+resources/interface/
+resources/interface/about.png
+resources/interface/settings.png
