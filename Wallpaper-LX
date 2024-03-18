@@ -3,57 +3,43 @@
 SH_PATH=$(dirname "$0")
 MAIN_PY=$SH_PATH/main.py
 
-VENV_PATH=$HOME/.config/Wallpaper-LX
+VENV_PATH=$HOME/.config/Wallpaper-LX/.venv
 ACTIVATE_PATH=$VENV_PATH/bin/activate
 
 INSTALL_MODULES=false
 
 if [ ! -d $VENV_PATH ]; then
-    python3 -m venv $VENV_PATH
-    INSTALL_MODULES=true
+  python3 -m venv $VENV_PATH
+  INSTALL_MODULES=true
 fi
 if [ ! -f $ACTIVATE_PATH ]; then
-    python3 -m venv $VENV_PATH
-    INSTALL_MODULES=true
+  python3 -m venv $VENV_PATH
+  INSTALL_MODULES=true
 fi
 if [ ! -f $ACTIVATE_PATH ]; then
-    echo venv error. Possibly python3-venv is not installed on your system.
-    exit
+  echo venv error. Possibly python3-venv is not installed on your system.
+  exit 1
 fi
 
 source $ACTIVATE_PATH
 
 if [ $INSTALL_MODULES = true ]; then
-    pip3 install pillow
+  pip3 install pillow
 fi
 
-python3 -u $MAIN_PY $?
-result_code=$?
+python3 -u $MAIN_PY
 
-if [ ! $result_code = 0 ]; then
-    deactivate
+if [ ! $? = 0 ]; then
+  deactivate
 
-    VENV_FILES=("$HOME/.config/Wallpaper-LX/bin" "$HOME/.config/Wallpaper-LX/include" "$HOME/.config/Wallpaper-LX/lib" "$HOME/.config/Wallpaper-LX/lib64" "$HOME/.config/Wallpaper-LX/share" "$HOME/.config/Wallpaper-LX/pyvenv.cfg")
+  rm -r -dir --force $VENV_PATH
 
-    for element in ${VENV_FILES[@]}; do
-        if [ -d $element ]; then
-            rm -r -dir --force $element
-            echo "INFO: $element (removed)"
-        elif [ -f $element ]; then
-            rm --force $element
-            echo "INFO: $element (removed)"
-        elif [ -h $element ]; then
-            rm --force $element
-            echo "INFO: $element (removed)"
-        fi
-    done
+  python3 -m venv $VENV_PATH
+  source $ACTIVATE_PATH
 
-    python3 -m venv $VENV_PATH
-    source $ACTIVATE_PATH
+  pip3 install pillow
 
-    pip3 install pillow
-
-    python3 -u $MAIN_PY
+  python3 -u $MAIN_PY
 fi
 
 deactivate

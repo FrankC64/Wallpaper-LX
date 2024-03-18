@@ -11,36 +11,18 @@ Entornos de escritorio compatibles: LXQT y GNOME.
 ---
 
 ## Instalar
-**1. Paquetes necesarios**<br>
-Para que la app funcione se deben instalar varios paquetes. Escriba los siguientes comandos en su terminal:
-
-### Lubuntu (LXQT)
-```bash
-sudo apt-get update
-sudo apt-get install python3-venv python3-tk python3-pil.imagetk git xrandr xdpyinfo
-```
-
-### Fedora (GNOME)
-```bash
-dnf check-update
-sudo dnf install python3-virtualenv python3-tkinter python3-imaging-tk git xrandr xdpyinfo
-```
-
-**2. Clonar el repositorio**<br>
+**1. Clonar el repositorio**<br>
 Escriba los siguientes comandos en su terminal:
 
 ```bash
-mkdir ~/apps
-cd ~/apps
 git clone https://github.com/FrankC64/Wallpaper-LX.git
 cd Wallpaper-LX
 ```
 
-**3. Instalar**<br>
+**2. Instalar**<br>
 Escriba los siguientes comandos en su terminal:
 
 ```bash
-chmod +x install
 sudo ./install
 ```
 
@@ -48,18 +30,11 @@ sudo ./install
 Para desinstalar la app solo debe ejecutar los siguientes comandos desde la raíz del repositorio clonado. 
 
 ```bash
-chmod +x uninstall
 sudo ./uninstall
 ```
 
 ## ¿Cómo uso la app sin instalarla?
 Para utilizarlo de esta manera siga los pasos uno y dos de la instalación y en la raíz del repositorio clonado ejecute el siguiente comando:
-
-```bash
-chmod +x Wallpaper-LX
-```
-
-Y para ejecutarlo use el siguiente comando:
 
 ```bash
 ./Wallpaper-LX
