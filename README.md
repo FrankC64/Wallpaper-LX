@@ -4,9 +4,10 @@
 Wallpaper LX is an open source app that helps you set the wallpaper on one or more screens quickly and easily.
 
 [![license](https://img.shields.io/badge/license-GPL-blue.svg)]()
-[![release](https://img.shields.io/badge/release-v1.0-blue.svg)]()
+[![release](https://img.shields.io/badge/release-v1.1.1-blue.svg)]()
 
-Compatible desktop environments: LXQT y GNOME.
+Compatible desktop environments: LXQT and GNOME.
+Compatible distributions: Debian (and derivatives) and Fedora.
 
 ---
 
